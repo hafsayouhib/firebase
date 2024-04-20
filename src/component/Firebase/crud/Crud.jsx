@@ -1,5 +1,6 @@
 import { db } from "../../../config/firebase-config";
-import { collection, doc, addDoc, getDocs, deleteDoc } from "firebase/firestore"; 
+import { collection, doc, addDoc, getDocs, deleteDoc, updateDoc } from "firebase/firestore"; 
+import { useState, useEffect } from "react";
 
 const Docadd = async (prop) => {
     try {
@@ -15,16 +16,83 @@ const Docadd = async (prop) => {
     }
 };
 
-const Docread = async () => {
-    try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        querySnapshot.forEach((doc) => {
-            console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-        });
-    } catch (error) {
-        console.error("Error reading documents: ", error);
+const Docread= ()=>{
+    const [data, setData] = useState();
+    const [updateId, setUpdateId] = useState(null);
+    const [updateEmail, setUpdateEmail] = useState('');
+
+    useEffect(()=>{
+        const read = async()=>{
+            try {
+                const querySnapshot = await getDocs(collection(db, "users"));
+                setData(querySnapshot.docs);
+            } catch (e) {
+                console.error("Error reading documents: ", e);
+            }
+        }
+        read();
+    }, [data]);
+
+    const handleUpdate = async (id) => {
+        setUpdateId(id);
+        const docRef = data.find(doc => doc.id === id);
+        setUpdateEmail(docRef.data().email);
     }
-};
+
+    const handleUpdateSubmit = async () => {
+        try {
+            await updateDoc(doc(db, "users", updateId), {
+                email: updateEmail
+            });
+            setUpdateId(null);
+            console.log("Document updated successfully");
+        } catch (error) {
+            console.error("Error updating document: ", error);
+        }
+    }
+
+    return(
+        <>
+            <table>
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        data && data.map((item,i)=>{
+                            return(
+                                <tr key={i}>
+                                    <td>{item.id}</td>
+                                    <td>{item.data().email}</td>
+                                    <td>
+                                        <button onClick={() => handleUpdate(item.id)}>Update</button>
+                                        <button onClick={() => Docdelete(item.id)}>Delete</button>
+                                    </td>
+                                </tr>
+                            )
+                        }) 
+                    }
+                    {
+                        updateId &&
+                        <tr>
+                            <td>{updateId}</td>
+                            <td>
+                                <input type="text" value={updateEmail} onChange={(e) => setUpdateEmail(e.target.value)} />
+                            </td>
+                            <td>
+                                <button onClick={handleUpdateSubmit}>Save</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </>
+    )
+}
 
 const Docdelete = async (docId) => {
     try {

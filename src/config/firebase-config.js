@@ -5,13 +5,13 @@ import { getFirestore } from "firebase/firestore";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD5aX6GTaXnI1O-HXgg7jypnXp69ygLxrc",
-  authDomain: "codegirls-r1.firebaseapp.com",
-  projectId: "codegirls-r1",
-  storageBucket: "codegirls-r1.appspot.com",
-  messagingSenderId: "948314275641",
-  appId: "1:948314275641:web:5d28d72a5da94baddff2e8",
-  measurementId: "G-JMLJT5QN6P"
+  apiKey: "AIzaSyCeRJ4IyUWRYSNlPV8M8KTsvJo_lBNFaOg",
+  authDomain: "ecommerce-32ea8.firebaseapp.com",
+  projectId: "ecommerce-32ea8",
+  storageBucket: "ecommerce-32ea8.appspot.com",
+  messagingSenderId: "1060648258935",
+  appId: "1:1060648258935:web:5a24255b748212abe16572",
+  measurementId: "G-P423W6FW2J"
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
